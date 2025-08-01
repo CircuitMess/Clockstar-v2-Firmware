@@ -1,6 +1,10 @@
-# Clockstar Firmware
+# Clockstar v2 Firmware
 
 > Build & Code Your Own Smartwatch
+
+### Note - this is firmware for Clockstar v2 (revision 2)
+
+For original Clockstar (v1) refer to [here](https://github.com/CircuitMess/Clockstar-Firmware)
 
 # Building
 
@@ -58,7 +62,7 @@ From the project root go into your build folder (usually just /build):
 ```shell
 cd build
 esptool --chip esp32s3 merge_bin --fill-flash-size 4MB -o ../Clockstar.bin --flash_mode dio 
---flash_freq 80m --flash_size 4MB 0x0 bootloader/bootloader.bin 0x10000 Clockstar-Firmware.bin 
+--flash_freq 80m --flash_size 4MB 0x0 bootloader/bootloader.bin 0x10000 Clockstar-v2-Firmware.bin 
 0x8000 
 partition_table/partition-table.bin 0x2f6000 storage.bin
 ```
@@ -71,7 +75,7 @@ repository
 and flash it manually using esptool:
 
 ```shell
-esptool -c esp32s3 -b 921600 -p <PORT> write_flash 0 Clockstar-Firmware.bin
+esptool -c esp32s3 -b 921600 -p <PORT> write_flash 0 Clockstar-v2-Firmware.bin
 ```
 
 Alternatively, you can also do so using [CircuitBlocks](https://code.circuitmess.com/) by
