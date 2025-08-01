@@ -10,4 +10,4 @@ set(IDF_TARGET esp32s3)
 add_compile_definitions("LV_TICK_CUSTOM_SYS_TIME_EXPR=(esp_timer_get_time() / 1000LL)")
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(Clockstar-Firmware)
+project(Clockstar-v2-Firmware)
