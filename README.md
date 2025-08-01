@@ -61,10 +61,7 @@ From the project root go into your build folder (usually just /build):
 
 ```shell
 cd build
-esptool --chip esp32s3 merge_bin --fill-flash-size 4MB -o ../Clockstar.bin --flash_mode dio 
---flash_freq 80m --flash_size 4MB 0x0 bootloader/bootloader.bin 0x10000 Clockstar-v2-Firmware.bin 
-0x8000 
-partition_table/partition-table.bin 0x2f6000 storage.bin
+esptool --chip esp32s3 merge_bin --fill-flash-size 4MB -o ../Clockstar-v2.bin --flash_mode dio --flash_freq 80m --flash_size 4MB 0x0 bootloader/bootloader.bin 0x10000 Clockstar-v2-Firmware.bin 0x8000 partition_table/partition-table.bin 0x2f6000 storage.bin
 ```
 
 # Restoring the stock firmware
