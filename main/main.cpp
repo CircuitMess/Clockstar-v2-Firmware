@@ -43,8 +43,75 @@ void shutdown(){
 	if(!bl->isOn()){
 		bl->fadeIn();
 	}
-	vTaskDelay(SleepMan::ShutdownTime-1000);
+	vTaskDelay(SleepMan::ShutdownTime - 1000);
 	sleepMan->shutdown();
+}
+
+/**
+ * Since Clockstar v2 has specific I2C periphery compared to Bit v3,
+ * we can determine which hardware this is running on.
+ */
+bool checkClockstarV2(){
+	const gpio_num_t ClockstarI2C_SDA = GPIO_NUM_4;
+	const gpio_num_t ClockstarI2C_SCL = GPIO_NUM_5;
+	const uint8_t ClockstarIMU_Address = 0x6A;
+
+	I2C clockI2C(I2C_NUM_0, ClockstarI2C_SDA, ClockstarI2C_SCL);
+
+	return clockI2C.probe(ClockstarIMU_Address) == ESP_OK;
+}
+
+/**
+ * Necessary to ascertain if this code is potentially running on a Bit v3 board,
+ * since both Bit v3 and Clockstar v2 were originally fused with PID 0x0008.
+ *
+ * Differentiation is done using a PID addition in EFUSE_BLK4:
+ * 0x00 - Bit v3
+ * 0x01 - Clockstar v2
+ */
+void resolvePIDConflicts(){
+
+	static constexpr esp_efuse_desc_t PIDBlock = { EFUSE_BLK4, 0, 8 };
+	static constexpr const esp_efuse_desc_t* PID_Blob[] = { &PIDBlock, nullptr };
+	static constexpr uint8_t Block4_Expected = 0x01;
+	uint8_t pidAddition = 0;
+
+	auto err = esp_efuse_read_field_blob((const esp_efuse_desc_t**) PID_Blob, &pidAddition, 8);
+	if(err != ESP_OK){
+		ESP_ERROR_CHECK_WITHOUT_ABORT(err);
+		while(1){
+			ESP_LOGE("main", "couldn't read EFUSE_BLK4");
+			delayMillis(1000);
+		}
+	}
+	ESP_LOGI("main", "read from block 4: %d", pidAddition);
+
+	switch(pidAddition){
+		case 0:
+			if(!checkClockstarV2()){
+				while(1){
+					ESP_LOGE("main", "Not running on Clockstar v2");
+					delayMillis(1000);
+				}
+			}
+
+			err = esp_efuse_write_field_blob((const esp_efuse_desc_t**) PID_Blob, &Block4_Expected, 8);
+			if(err != ESP_OK){
+				ESP_ERROR_CHECK_WITHOUT_ABORT(err);
+				while(1){
+					ESP_LOGE("main", "couldn't read EFUSE_BLK4");
+					delayMillis(1000);
+				}
+			}
+			return;
+		case Block4_Expected:
+			return;
+		default:
+			while(1){
+				ESP_LOGE("main", "EFUSE_BLK4: %d, expected: %d", pidAddition, Block4_Expected);
+				delayMillis(1000);
+			}
+	}
 }
 
 void init(){
@@ -64,6 +131,9 @@ void init(){
 			EfuseMeta::log();
 		}
 	}
+
+	resolvePIDConflicts();
+
 
 	uint8_t rev = 0;
 	if(!EfuseMeta::readRev(rev)){
