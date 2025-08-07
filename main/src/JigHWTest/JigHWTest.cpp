@@ -607,7 +607,6 @@ bool JigHWTest::HWVersion(){
 
 		if(revision == EfuseMeta::getHardcodedRevision()){
 			test->log("Already fused.", (uint32_t) revision);
-			return true;
 		}else{
 			test->log("Wrong binary already fused!", (uint32_t) revision);
 			return false;
@@ -635,11 +634,13 @@ bool JigHWTest::HWVersion(){
 			return false;
 		}
 		test->log("fused to BLK4", (uint32_t) Block4_Expected);
-		return true;
 	}else if(pidAddition == Block4_Expected){
 		test->log("already fused to BLK4", (uint32_t) Block4_Expected);
-		return true;
 	}
 
-	return EfuseMeta::write();
+	if(revision == 0 && version == 0){
+		return EfuseMeta::write();
+	}
+
+	return true;
 }

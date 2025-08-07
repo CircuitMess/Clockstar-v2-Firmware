@@ -99,10 +99,11 @@ void resolvePIDConflicts(){
 			if(err != ESP_OK){
 				ESP_ERROR_CHECK_WITHOUT_ABORT(err);
 				while(1){
-					ESP_LOGE("main", "couldn't read EFUSE_BLK4");
+					ESP_LOGE("main", "couldn't write EFUSE_BLK4");
 					delayMillis(1000);
 				}
 			}
+			ESP_LOGI("main", "fused %d to BLK4", Block4_Expected);
 			return;
 		case Block4_Expected:
 			return;
@@ -115,6 +116,8 @@ void resolvePIDConflicts(){
 }
 
 void init(){
+	esp_log_level_set("main", ESP_LOG_DEBUG);
+
 	if(JigHWTest::checkJig()){
 		printf("Jig\n");
 		Pins::setLatest();
