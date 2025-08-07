@@ -1,5 +1,6 @@
 #include "Pins.hpp"
 #include "Util/EfuseMeta.h"
+#include "Util/stdafx.h"
 
 static const char* TAG = "Pins";
 
@@ -15,8 +16,8 @@ int Pins::get(Pin pin){
 			instance->currentMap = &instance->Revision2;
 		}else{
 			while(true){
-				EfuseMeta::log();
-				while(true);
+				ESP_LOGE("Pins", "No pin map found for revision %d!", revision);
+				delayMillis(1000);
 			}
 		}
 	}
