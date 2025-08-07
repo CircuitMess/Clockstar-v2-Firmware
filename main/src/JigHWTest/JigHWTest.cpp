@@ -614,5 +614,32 @@ bool JigHWTest::HWVersion(){
 		}
 	}
 
+	static constexpr esp_efuse_desc_t PIDBlock = { EFUSE_BLK4, 0, 8 };
+	static constexpr const esp_efuse_desc_t* PID_Blob[] = { &PIDBlock, nullptr };
+	static constexpr uint8_t Block4_Expected = 0x01;
+	uint8_t pidAddition = 0;
+
+	auto err = esp_efuse_read_field_blob((const esp_efuse_desc_t**) PID_Blob, &pidAddition, 8);
+	if(err != ESP_OK){
+		test->log("couldn't read EFUSE_BLK4", (uint32_t) 0);
+		return false;
+	}
+
+	if(pidAddition != 0 && pidAddition != Block4_Expected){
+		test->log("Wrong pidAddition (BLK4) fused!", (uint32_t) revision);
+		return false;
+	}else if(pidAddition == 0){
+		err = esp_efuse_write_field_blob((const esp_efuse_desc_t**) PID_Blob, &Block4_Expected, 8);
+		if(err != ESP_OK){
+			test->log("couldn't write EFUSE_BLK4", (uint32_t) 0);
+			return false;
+		}
+		test->log("fused to BLK4", (uint32_t) Block4_Expected);
+		return true;
+	}else if(pidAddition == Block4_Expected){
+		test->log("already fused to BLK4", (uint32_t) Block4_Expected);
+		return true;
+	}
+
 	return EfuseMeta::write();
 }
