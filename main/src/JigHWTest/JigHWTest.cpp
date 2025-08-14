@@ -103,7 +103,7 @@ void JigHWTest::start(){
 	canvas->setTextFont(0);
 	canvas->setTextSize(1);
 
-	canvas->drawString("Artemis Hardware Test", canvas->width() / 2, 6);
+	canvas->drawString("Clockstar Hardware Test", canvas->width() / 2, 6);
 	canvas->println();
 
 	canvas->pushSprite(0, 0);
