@@ -26,7 +26,7 @@ Input* JigHWTest::input = nullptr;
 
 
 JigHWTest::JigHWTest(){
-	display = new Display();
+	display = new Display(EfuseMeta::getHardcodedRevision());
 	panel = &display->getLGFX();
 	canvas = new LGFX_Sprite(panel);
 	canvas->setColorDepth(lgfx::rgb565_2Byte);

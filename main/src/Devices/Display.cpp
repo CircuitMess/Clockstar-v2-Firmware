@@ -2,9 +2,14 @@
 #include <Pins.hpp>
 #include "Util/EfuseMeta.h"
 
-Display::Display(){
+Display::Display(uint8_t revision){
+
+	if(revision == 0xFF){
+		EfuseMeta::readRev(revision);
+	}
+
 	setupBus();
-	setupPanel();
+	setupPanel(revision);
 
 	// LGFX init -> panel init -> bus init
 	panel.setBus(&bus);
@@ -18,25 +23,22 @@ Display::~Display(){
 
 void Display::setupBus(){
 	lgfx::Bus_SPI::config_t cfg = {
-		.freq_write = 40000000,
-		.freq_read = 40000000,
-		.pin_sclk = (int16_t) Pins::get(Pin::TftSck),
-		.pin_miso = -1,
-		.pin_mosi = (int16_t) Pins::get(Pin::TftMosi),
-		.pin_dc = (int16_t) Pins::get(Pin::TftDc),
-		.spi_mode = 0,
-		.spi_3wire = false,
-		.use_lock = false,
-		.dma_channel = LGFX_ESP32_SPI_DMA_CH,
-		.spi_host = SPI2_HOST
+			.freq_write = 40000000,
+			.freq_read = 40000000,
+			.pin_sclk = (int16_t) Pins::get(Pin::TftSck),
+			.pin_miso = -1,
+			.pin_mosi = (int16_t) Pins::get(Pin::TftMosi),
+			.pin_dc = (int16_t) Pins::get(Pin::TftDc),
+			.spi_mode = 0,
+			.spi_3wire = false,
+			.use_lock = false,
+			.dma_channel = LGFX_ESP32_SPI_DMA_CH,
+			.spi_host = SPI2_HOST
 	};
 	bus.config(cfg);
 }
 
-void Display::setupPanel(){
-	uint8_t rev = 0;
-	EfuseMeta::readRev(rev);
-
+void Display::setupPanel(uint8_t revision){
 	lgfx::Panel_Device::config_t cfg = {
 			.pin_cs = -1,
 			.pin_rst = (int16_t) Pins::get(Pin::TftRst),
@@ -47,7 +49,7 @@ void Display::setupPanel(){
 			.panel_height = 128,
 			.offset_x = 2,
 			.offset_y = 1,
-			.offset_rotation = (uint8_t) (rev == 0 ? 0 : 2),
+			.offset_rotation = (uint8_t) (revision == 0 ? 0 : 2),
 			.readable = false,
 			.invert = false,
 			.rgb_order = false,
