@@ -4,6 +4,7 @@
 #include "Screens/Lock/LockScreen.h"
 #include "Screens/Level.h"
 #include "Screens/Theremin/Theremin.h"
+#include "Screens/PongGame.h"
 #include "Screens/Settings/SettingsScreen.h"
 #include "Util/stdafx.h"
 #include "LV_Interface/InputLVGL.h"
@@ -151,6 +152,7 @@ void MainMenu::onClick(){
 			[](){ },
 			[this](){ transition([](){ return std::make_unique<Level>(); }); },
 			[this](){ transition([](){ return std::make_unique<Theremin>(); }); },
+			[this](){ transition([](){ return std::make_unique<PongGame>(); }); },
 			[](){ },
 			[this](){ transition([](){ return std::make_unique<SettingsScreen>(); }); }
 	};
@@ -190,10 +192,10 @@ void MainMenu::handleInput(Input::Data& event){
 }
 
 void MainMenu::setConnAlts(){
-	auto connEl = (MenuItemAlt*) items[3];
+	auto connEl = (MenuItemAlt*) items[ConnectionItemIndex];
 
 	const auto connAlt = phone.getPhoneType() == Phone::PhoneType::None
-						 ? ItemInfos[3].iconAltPath : ItemInfos[3].iconPath;
+						 ? ItemInfos[ConnectionItemIndex].iconAltPath : ItemInfos[ConnectionItemIndex].iconPath;
 	connEl->setAltParams(connAlt, ConnDesc[(int) phone.getPhoneType()]);
 }
 

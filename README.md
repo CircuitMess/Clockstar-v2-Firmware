@@ -6,6 +6,17 @@
 
 For original Clockstar (v1) refer to [here](https://github.com/CircuitMess/Clockstar-Firmware)
 
+## 📚 Documentation
+
+**New to customization?** Check out our comprehensive documentation:
+
+- **[QUICKSTART.md](QUICKSTART.md)** ⚡ - Get started in 30 minutes
+- **[CUSTOMIZATION.md](CUSTOMIZATION.md)** 📖 - Complete customization guide  
+- **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** 🏗️ - Deep dive into architecture
+- **[docs/tutorials/PONG_GAME.md](docs/tutorials/PONG_GAME.md)** 🎮 - Build a Pong game tutorial
+
+See [docs/README.md](docs/README.md) for the full documentation index.
+
 # Building
 
 To build the Clockstar base firmware, you'll need the ESP-IDF. You can find the getting started
