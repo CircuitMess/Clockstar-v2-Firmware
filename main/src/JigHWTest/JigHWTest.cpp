@@ -54,13 +54,13 @@ bool JigHWTest::checkJig(){
 	char buf[7];
 	int wp = 0;
 
-	uint32_t start = millis();
+	const uint32_t start = millis();
 	int c;
 	while(millis() - start < CheckTimeout){
 		vTaskDelay(1);
 		c = getchar();
 		if(c == EOF) continue;
-		buf[wp] = (char) c;
+		buf[wp] = static_cast<char>(c);
 		wp = (wp + 1) % 7;
 
 		for(int i = 0; i < 7; i++){
@@ -71,7 +71,12 @@ bool JigHWTest::checkJig(){
 				match += buf[(i + j) % 7] == target[j];
 			}
 
-			if(match == 7) return true;
+			if(match == 7){
+				// This is important, desktop app freezes otherwise if the UART/JTAG buffer isn't emptied when it tries to write something again
+				while(int c2 = getchar() != EOF) {}
+
+				return true;
+			}
 		}
 	}
 
