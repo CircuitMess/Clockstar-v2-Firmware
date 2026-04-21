@@ -98,7 +98,7 @@ bool IMU::init(){
 	uint8_t rev = 0;
 	EfuseMeta::readRev(rev);
 
-	if(rev == 1){
+	if(rev == 1 || rev == 2){
 		setWristPosition(IMU::WatchPosition::FaceUp);
 	}else{
 		setWristPosition(IMU::WatchPosition::FaceDown);
@@ -260,7 +260,7 @@ IMU::Sample IMU::getSample(){
 	uint8_t rev = 0;
 	EfuseMeta::readRev(rev);
 
-	if(rev == 1){
+	if(rev == 1 || rev == 2){
 		sample.accelX *= -1.0f;
 		sample.gyroX *= -1.0f;
 		sample.accelY *= -1.0f;
